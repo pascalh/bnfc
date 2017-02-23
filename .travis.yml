@@ -1,11 +1,12 @@
 language: haskell
 script:
-    - cabal install
-    - cabal configure --enable-tests && cabal build && cabal test
+    - stack setup
+    - stack build
+    - stack test
 before_install:
   - sudo apt-get update -qq
   - sudo apt-get install jlex cup openjdk-6-jdk
   - sudo apt-get install g++
   - sudo apt-get install texlive-latex-base
-  - cd source
+  - curl -sSL https://get.haskellstack.org/ | sh
 env: CLASSPATH=".:/usr/share/java/JLex.jar:/usr/share/java/cup.jar"
