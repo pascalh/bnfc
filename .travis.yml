@@ -1,12 +1,24 @@
 language: c
-script:
-  - stack setup
-  - stack build
-  - stack test
+env:
+# - GHCVER=6.12.3
+# - GHCVER=7.4.2 CLASSPATH=".:/usr/share/java/JLex.jar:/usr/share/java/cup.jar"
+ - GHCVER=7.6.3 CLASSPATH=".:/usr/share/java/JLex.jar:/usr/share/java/cup.jar"
+ - GHCVER=7.8.2 CLASSPATH=".:/usr/share/java/JLex.jar:/usr/share/java/cup.jar"
 before_install:
+  - travis_retry sudo add-apt-repository -y ppa:hvr/ghc
+  - travis_retry sudo apt-get update
+  - travis_retry sudo apt-get update
+  - travis_retry sudo apt-get install cabal-install-1.18 ghc-$GHCVER alex happy
+  - export PATH=/opt/ghc/$GHCVER/bin:$PATH
   - sudo apt-get update -qq
   - sudo apt-get install jlex cup openjdk-6-jdk
   - sudo apt-get install g++
   - sudo apt-get install texlive-latex-base
-  - curl -sSL https://get.haskellstack.org/ | sh
-env: CLASSPATH=".:/usr/share/java/JLex.jar:/usr/share/java/cup.jar"
+
+install:
+  - cabal-1.18 update
+  - cabal-1.18 install --only-dependencies --enable-tests
+script:
+ - cabal-1.18 configure --enable-tests
+ - cabal-1.18 build # --ghc-options=-Werror  #
+ - cabal-1.18 test
